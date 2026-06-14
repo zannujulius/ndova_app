@@ -4,6 +4,7 @@ import {
   Role,
   UserRole,
   Service,
+  ProviderService,
   Appointment,
   AppointmentStatusHistory,
 } from '../../models';
@@ -22,7 +23,7 @@ const appointmentIncludes = {
   include: [
     { model: User, as: 'client', attributes: ['id', 'firstName', 'lastName', 'email'] },
     { model: User, as: 'provider', attributes: ['id', 'firstName', 'lastName', 'email'] },
-    { model: Service, as: 'service', attributes: ['id', 'name', 'durationMinutes'] },
+    { model: Service, as: 'service', attributes: ['id', 'name'] },
   ],
 };
 
@@ -87,13 +88,22 @@ export async function createAppointment(
   const service = await Service.findOne({ where: { id: input.serviceId, isActive: true } });
   if (!service) throw ApiError.notFound('Service not found or inactive');
 
-  // Validate that the specified user actually has the PROVIDER role
   if (input.providerId) {
     const hasRole = await UserRole.findOne({
       where: { userId: input.providerId },
       include: [{ model: Role, as: 'role', where: { name: 'PROVIDER' } }],
     });
     if (!hasRole) throw ApiError.badRequest('The specified user is not a provider');
+
+    const offering = await ProviderService.findOne({
+      where: {
+        serviceId: input.serviceId,
+        providerId: input.providerId,
+      },
+    });
+    if (!offering) {
+      throw ApiError.badRequest('The provider does not offer the selected service');
+    }
   }
 
   const appointment = await sequelize.transaction(async (t) => {

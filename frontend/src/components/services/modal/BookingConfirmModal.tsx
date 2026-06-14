@@ -6,7 +6,6 @@ import {
   MailOutlined,
   EnvironmentOutlined,
   LinkOutlined,
-  MessageOutlined,
 } from "@ant-design/icons";
 import { useAppSelector } from "@/app/hooks";
 
@@ -15,12 +14,13 @@ const { Text } = Typography;
 interface Props {
   open: boolean;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm: (discussion?: string) => Promise<void>;
   selectedDate: Dayjs | null;
   selectedTime: string | null;
   providerName: string;
   serviceType: string;
   durationMinutes: number;
+  isLoading?: boolean;
 }
 
 interface BookingFormValues {
@@ -41,6 +41,7 @@ export default function BookingConfirmModal({
   providerName,
   serviceType,
   durationMinutes,
+  isLoading = false,
 }: Props) {
   const [form] = Form.useForm<BookingFormValues>();
   const user = useAppSelector((s) => s.auth.user);
@@ -62,8 +63,8 @@ export default function BookingConfirmModal({
   const handleOk = () => {
     form
       .validateFields()
-      .then(() => {
-        onConfirm();
+      .then(async (values) => {
+        await onConfirm(values.discussion);
         form.resetFields();
       })
       .catch(() => {
@@ -78,11 +79,11 @@ export default function BookingConfirmModal({
       onCancel={onClose}
       onOk={handleOk}
       okText="Confirm booking"
-      okButtonProps={{ size: "large" }}
+      okButtonProps={{ size: "large", loading: isLoading }}
       cancelButtonProps={{ size: "large" }}
       width={520}
       centered
-      destroyOnHide
+      destroyOnHidden
     >
       {/* Booking summary */}
       <div className="bg-blue-50 rounded-lg px-4 py-3 mb-5 flex flex-col gap-1">
@@ -159,8 +160,7 @@ export default function BookingConfirmModal({
         <Form.Item label="What would you like to discuss?" name="discussion">
           <Input.TextArea
             rows={3}
-            placeholder="Briefly describe your reason for booking this appointment…"
-            prefix={<MessageOutlined />}
+            placeholder="Briefly describe your reason for booking this appointment..."
             style={{ resize: "none" }}
           />
         </Form.Item>

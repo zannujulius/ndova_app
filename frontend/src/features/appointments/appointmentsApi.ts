@@ -4,6 +4,7 @@ import { API_BASE_URL } from '@/config/api';
 
 interface CreateAppointmentBody {
   serviceId: string;
+  providerId?: string;
   requestedDate: string;
   requestedTime: string;
   reason?: string;

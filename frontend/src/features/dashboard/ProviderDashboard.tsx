@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Row,
   Col,
@@ -7,11 +8,15 @@ import {
   Typography,
   Spin,
   Alert,
+  Button,
+  message,
 } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 import type { TableColumnsType } from "antd";
 import { useGetProviderDashboardQuery } from "./dashboardApi";
 import StatusTag from "@/components/common/StatusTag";
 import type { Appointment } from "@/types";
+import ProviderServiceModal from "@/features/provider-services/ProviderServiceModal";
 
 const { Title, Text } = Typography;
 
@@ -46,6 +51,9 @@ const statItems = [
 ] as const;
 
 export default function ProviderDashboard() {
+  const [providerServiceModalOpen, setProviderServiceModalOpen] =
+    useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
   const { data, isLoading, error } = useGetProviderDashboardQuery();
   const dashboard = data?.data;
 
@@ -67,13 +75,32 @@ export default function ProviderDashboard() {
 
   return (
     <div>
-      <div style={{ marginBottom: 24 }}>
-        <Title level={4} style={{ margin: 0, color: "#1A1C1E" }}>
-          Dashboard
-        </Title>
-        <Text type="secondary" style={{ fontSize: 14 }}>
-          Your appointment overview
-        </Text>
+      {contextHolder}
+
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          marginBottom: 24,
+        }}
+      >
+        <div>
+          <Title level={4} style={{ margin: 0, color: "#1A1C1E" }}>
+            Dashboard
+          </Title>
+          <Text type="secondary" style={{ fontSize: 14 }}>
+            Your appointment overview
+          </Text>
+        </div>
+
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={() => setProviderServiceModalOpen(true)}
+        >
+          Create Service
+        </Button>
       </div>
 
       <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
@@ -107,6 +134,16 @@ export default function ProviderDashboard() {
           locale={{ emptyText: "No appointments yet" }}
         />
       </Card>
+
+      {providerServiceModalOpen && (
+        <ProviderServiceModal
+          open
+          onClose={() => setProviderServiceModalOpen(false)}
+          onSaved={() => {
+            void messageApi.success("Provider service created");
+          }}
+        />
+      )}
     </div>
   );
 }

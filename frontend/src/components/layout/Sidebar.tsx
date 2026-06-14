@@ -5,6 +5,7 @@ import {
   AppstoreOutlined,
   TeamOutlined,
   LogoutOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
@@ -26,6 +27,7 @@ const roleNavMap: Record<
   PROVIDER: [
     { key: "/dashboard", label: "Dashboard", icon: <DashboardOutlined /> },
     { key: "/appointments", label: "Appointments", icon: <CalendarOutlined /> },
+    { key: "/settings", label: "Settings", icon: <SettingOutlined /> },
   ],
   CLIENT: [
     { key: "/dashboard", label: "Dashboard", icon: <DashboardOutlined /> },

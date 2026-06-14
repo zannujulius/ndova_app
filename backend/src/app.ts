@@ -14,6 +14,7 @@ import rolesRoutes from "./modules/roles/roles.routes";
 import servicesRoutes from "./modules/services/services.routes";
 import appointmentsRoutes from "./modules/appointments/appointments.routes";
 import dashboardRoutes from "./modules/dashboard/dashboard.routes";
+import providerServicesRoutes from "./modules/provider-services/provider-services.routes";
 
 const app = express();
 
@@ -87,6 +88,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", usersRoutes);
 app.use("/api/roles", rolesRoutes);
 app.use("/api/services", servicesRoutes);
+app.use("/api/provider-services", providerServicesRoutes);
 app.use("/api/appointments", appointmentsRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 

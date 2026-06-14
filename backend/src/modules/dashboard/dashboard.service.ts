@@ -6,14 +6,14 @@ import { AppointmentStatus } from '../../types/enums';
 const clientApptIncludes = {
   include: [
     { model: User, as: 'provider', attributes: ['id', 'firstName', 'lastName', 'email'] },
-    { model: Service, as: 'service', attributes: ['id', 'name', 'durationMinutes'] },
+    { model: Service, as: 'service', attributes: ['id', 'name'] },
   ],
 };
 
 const providerApptIncludes = {
   include: [
     { model: User, as: 'client', attributes: ['id', 'firstName', 'lastName', 'email'] },
-    { model: Service, as: 'service', attributes: ['id', 'name', 'durationMinutes'] },
+    { model: Service, as: 'service', attributes: ['id', 'name'] },
   ],
 };
 
@@ -21,7 +21,7 @@ const adminApptIncludes = {
   include: [
     { model: User, as: 'client', attributes: ['id', 'firstName', 'lastName', 'email'] },
     { model: User, as: 'provider', attributes: ['id', 'firstName', 'lastName', 'email'] },
-    { model: Service, as: 'service', attributes: ['id', 'name', 'durationMinutes'] },
+    { model: Service, as: 'service', attributes: ['id', 'name'] },
   ],
 };
 

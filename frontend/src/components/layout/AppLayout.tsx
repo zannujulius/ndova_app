@@ -7,14 +7,15 @@ const { Content } = Layout;
 export default function AppLayout() {
   return (
     <Layout style={{ minHeight: "100vh", background: "#F4F6FA" }}>
-      <Content className="container  top-0 relative bg-white mx-auto">
-        <div className="absolute h-8 top-0 bg-blue-500 w-full" />
-        <div className="p-10 relative z-10">
-          
+      <div className="max-w-7xl relative h-full bg-white mx-auto w-full">
+        <div className="sticky z-10 h-6 bg-blue-500" />
+        <div className="py-6 px-10">
           <Header />
-          <Outlet />
+          <Content className="">
+            <Outlet />
+          </Content>
         </div>
-      </Content>
+      </div>
     </Layout>
   );
 }

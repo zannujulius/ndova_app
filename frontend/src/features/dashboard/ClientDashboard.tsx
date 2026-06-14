@@ -43,15 +43,15 @@ export default function ClientDashboard() {
 
   return (
     <div>
-      <div style={{ marginBottom: 20 }}>
-        {/* <Title level={4} style={{ margin: 0, color: '#1A1C1E' }}>
+      {/* <div style={{ marginBottom: 20 }}> */}
+      {/* <Title level={4} style={{ margin: 0, color: '#1A1C1E' }}>
           Dashboard
         </Title>
         <Text type="secondary" style={{ fontSize: 14 }}>
           Your appointment summary
         </Text> */}
-      </div>
-      <Tabs defaultActiveKey="1" items={items} />
+      {/* </div> */}
+      {/* <Tabs defaultActiveKey="1" items={items} /> */}
     </div>
   );
 }

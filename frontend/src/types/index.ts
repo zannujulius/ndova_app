@@ -27,8 +27,26 @@ export interface Service {
   id: string;
   name: string;
   description?: string;
-  durationMinutes: number;
   isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ProviderService {
+  id: string;
+  serviceId: string;
+  providerId: string;
+  location: string;
+  description: string;
+  stars: number;
+  durationMinutes: number;
+  imageUrl?: string;
+  meetingLink?: string;
+  service: Pick<Service, "id" | "name" | "description" | "isActive">;
+  provider: Pick<
+    User,
+    "id" | "firstName" | "lastName" | "email" | "phone"
+  >;
   createdAt: string;
   updatedAt: string;
 }
@@ -45,7 +63,7 @@ export interface Appointment {
   adminNote?: string;
   client?: Pick<User, "id" | "firstName" | "lastName" | "email">;
   provider?: Pick<User, "id" | "firstName" | "lastName" | "email">;
-  service?: Pick<Service, "id" | "name" | "durationMinutes">;
+  service?: Pick<Service, "id" | "name">;
   createdAt: string;
   updatedAt: string;
 }

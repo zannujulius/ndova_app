@@ -14,4 +14,5 @@ export const services = [
   { label: "Plumbing & Sanitation", emoji: "🚰" },
   { label: "Hair & Beauty", emoji: "💇" },
   { label: "Photography & Events", emoji: "📸" },
+  { label: "Cleaning Services", emoji: "🧹" },
 ];

@@ -49,14 +49,12 @@ describe('POST /api/services', () => {
       .send({
         name: 'Test Service',
         description: 'Created during automated tests.',
-        durationMinutes: 45,
       });
 
     expect(res.status).toBe(201);
     expect(res.body.success).toBe(true);
     expect(res.body.data).toMatchObject({
       name: 'Test Service',
-      durationMinutes: 45,
       isActive: true,
     });
 
@@ -67,7 +65,7 @@ describe('POST /api/services', () => {
     const res = await request(app)
       .post('/api/services')
       .set('Authorization', `Bearer ${clientToken}`)
-      .send({ name: 'Sneaky Service', durationMinutes: 30 });
+      .send({ name: 'Sneaky Service' });
 
     expect(res.status).toBe(403);
     expect(res.body.success).toBe(false);
@@ -76,7 +74,7 @@ describe('POST /api/services', () => {
   it('401 — unauthenticated request is rejected', async () => {
     const res = await request(app)
       .post('/api/services')
-      .send({ name: 'No Auth Service', durationMinutes: 30 });
+      .send({ name: 'No Auth Service' });
 
     expect(res.status).toBe(401);
     expect(res.body.success).toBe(false);
@@ -86,21 +84,12 @@ describe('POST /api/services', () => {
     const res = await request(app)
       .post('/api/services')
       .set('Authorization', `Bearer ${adminToken}`)
-      .send({ durationMinutes: 30 });
+      .send({});
 
     expect(res.status).toBe(400);
     expect(res.body.success).toBe(false);
   });
 
-  it('400 — rejects non-positive durationMinutes', async () => {
-    const res = await request(app)
-      .post('/api/services')
-      .set('Authorization', `Bearer ${adminToken}`)
-      .send({ name: 'Bad Duration', durationMinutes: 0 });
-
-    expect(res.status).toBe(400);
-    expect(res.body.success).toBe(false);
-  });
 });
 
 // ---------------------------------------------------------------------------
@@ -133,20 +122,19 @@ describe('PATCH /api/services/:id', () => {
     const res = await request(app)
       .patch(`/api/services/${createdServiceId}`)
       .set('Authorization', `Bearer ${adminToken}`)
-      .send({ name: 'Updated Test Service', durationMinutes: 60 });
+      .send({ name: 'Updated Test Service' });
 
     expect(res.status).toBe(200);
     expect(res.body.data).toMatchObject({
       name: 'Updated Test Service',
-      durationMinutes: 60,
     });
   });
 
-  it('400 — rejects invalid durationMinutes', async () => {
+  it('400 — rejects an empty name', async () => {
     const res = await request(app)
       .patch(`/api/services/${createdServiceId}`)
       .set('Authorization', `Bearer ${adminToken}`)
-      .send({ durationMinutes: -10 });
+      .send({ name: '' });
 
     expect(res.status).toBe(400);
   });

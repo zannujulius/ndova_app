@@ -129,7 +129,7 @@ export default function AppointmentDetailPage() {
                 {appt.service?.name ?? '—'}
               </Descriptions.Item>
               <Descriptions.Item label="Duration">
-                {appt.service ? `${appt.service.durationMinutes} min` : '—'}
+                —
               </Descriptions.Item>
               <Descriptions.Item label="Date">
                 {formatDate(String(appt.requestedDate))}

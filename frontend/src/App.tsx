@@ -10,6 +10,7 @@ import AppointmentsPage from "@/features/appointments/AppointmentsPage";
 import AppointmentDetailPage from "@/features/appointments/AppointmentDetailPage";
 import ServiceDetails from "@/pages/ServiceDetails";
 import ComingSoonPage from "@/pages/ComingSoonPage";
+import ProviderSettingsPage from "@/features/provider-services/ProviderSettingsPage";
 
 export default function App() {
   return (
@@ -49,6 +50,7 @@ export default function App() {
               element={<AppointmentDetailPage />}
             />
             <Route path="services" element={<ServicesPage />} />
+            <Route path="settings" element={<ProviderSettingsPage />} />
             <Route path="service-details/:index" element={<ServiceDetails />} />
             <Route path="users" element={<ComingSoonPage title="Users" />} />
           </Route>

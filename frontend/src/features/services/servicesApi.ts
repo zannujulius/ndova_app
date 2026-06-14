@@ -5,13 +5,11 @@ import { API_BASE_URL } from '@/config/api';
 interface CreateServiceBody {
   name: string;
   description?: string;
-  durationMinutes: number;
 }
 
 interface UpdateServiceBody {
   name?: string;
   description?: string;
-  durationMinutes?: number;
   isActive?: boolean;
 }
 

@@ -1,11 +1,10 @@
-import { Modal, Form, Input, InputNumber, Alert, Button } from "antd";
+import { Modal, Form, Input, Alert, Button } from "antd";
 import { useEffect } from "react";
 import {
   useCreateServiceMutation,
   useUpdateServiceMutation,
 } from "./servicesApi";
 import type { Service } from "@/types";
-import { services } from "@/utils/sampledat";
 
 interface Props {
   open: boolean;
@@ -16,7 +15,6 @@ interface Props {
 interface FormValues {
   name: string;
   description?: string;
-  durationMinutes: number;
 }
 
 export default function ServiceModal({ open, onClose, service }: Props) {
@@ -35,7 +33,6 @@ export default function ServiceModal({ open, onClose, service }: Props) {
       form.setFieldsValue({
         name: service.name,
         description: service.description,
-        durationMinutes: service.durationMinutes,
       });
     }
     if (!open) form.resetFields();
@@ -65,7 +62,7 @@ export default function ServiceModal({ open, onClose, service }: Props) {
       open={open}
       onCancel={onClose}
       footer={null}
-      destroyOnHide
+      destroyOnHidden
     >
       {apiError && (
         <Alert
@@ -96,17 +93,6 @@ export default function ServiceModal({ open, onClose, service }: Props) {
             rows={3}
             style={{ resize: "none" }}
           />
-        </Form.Item>
-
-        <Form.Item
-          label="Duration (minutes)"
-          name="durationMinutes"
-          rules={[
-            { required: true, message: "Duration is required" },
-            { type: "number", min: 1, message: "Must be at least 1 minute" },
-          ]}
-        >
-          <InputNumber min={1} style={{ width: "100%" }} placeholder="30" />
         </Form.Item>
 
         <div

@@ -81,17 +81,12 @@ router.get("/:id", servicesController.getServiceById);
  *         application/json:
  *           schema:
  *             type: object
- *             required: [name, durationMinutes]
+ *             required: [name]
  *             properties:
  *               name:
  *                 type: string
  *               description:
  *                 type: string
- *               durationMinutes:
- *                 type: number
- *               price:
- *                 type: number
- *                 format: float
  *     responses:
  *       201:
  *         description: Service created
@@ -134,10 +129,6 @@ router.post(
  *                 type: string
  *               description:
  *                 type: string
- *               durationMinutes:
- *                 type: number
- *               price:
- *                 type: number
  *     responses:
  *       200:
  *         description: Service updated

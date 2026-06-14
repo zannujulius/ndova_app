@@ -72,7 +72,6 @@ async function seed() {
     await UserRole.findOrCreate({
       where: { userId: user.id, roleId: roles[u.role].id },
     });
-
     console.log(`  User: ${u.email}  (${u.role})  password: ${u.password}`);
   }
 
@@ -81,24 +80,68 @@ async function seed() {
   // -------------------------------------------------------------------------
   const services = [
     {
-      name: "General Consultation",
-      description: "A standard consultation session with a provider.",
-      durationMinutes: 30,
+      name: "Medical Consultation",
+      description: "Professional medical consultations and healthcare guidance.",
     },
     {
-      name: "Follow-up Appointment",
-      description: "A follow-up session to review prior recommendations.",
-      durationMinutes: 20,
+      name: "Legal Advisory",
+      description: "Legal guidance, document review, and professional advisory services.",
     },
     {
-      name: "Extended Assessment",
-      description: "An in-depth assessment and planning session.",
-      durationMinutes: 60,
+      name: "Accounting & Tax",
+      description: "Accounting, bookkeeping, tax preparation, and compliance services.",
     },
     {
-      name: "Urgent Care Visit",
-      description: "Priority slot for urgent matters.",
-      durationMinutes: 15,
+      name: "Architecture & Design",
+      description: "Architectural planning, design, and project consultation services.",
+    },
+    {
+      name: "Civil Engineering",
+      description: "Civil engineering consultation, planning, and project support.",
+    },
+    {
+      name: "Software Development",
+      description: "Custom software, web, mobile, and technical development services.",
+    },
+    {
+      name: "Education & Tutoring",
+      description: "Academic tutoring, training, and educational support services.",
+    },
+    {
+      name: "Dental Care",
+      description: "Professional dental consultation, treatment, and preventive care.",
+    },
+    {
+      name: "Physiotherapy",
+      description: "Physical rehabilitation, mobility, and pain-management services.",
+    },
+    {
+      name: "Real Estate",
+      description: "Property sales, rentals, valuation, and real-estate advisory services.",
+    },
+    {
+      name: "Financial Planning",
+      description: "Personal and business financial planning and advisory services.",
+    },
+    {
+      name: "Electrical Works",
+      description: "Electrical installation, repair, and maintenance services.",
+    },
+    {
+      name: "Plumbing & Sanitation",
+      description: "Plumbing installation, repair, and sanitation services.",
+    },
+    {
+      name: "Hair & Beauty",
+      description: "Hair styling, grooming, skincare, and beauty services.",
+    },
+    {
+      name: "Photography & Events",
+      description: "Photography, videography, and event support services.",
+    },
+    {
+      name: "Cleaning Services",
+      description: "Residential, commercial, and specialized cleaning services.",
     },
   ];
 

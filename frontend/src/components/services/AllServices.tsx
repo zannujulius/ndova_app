@@ -1,22 +1,36 @@
 import { useState } from "react";
-import { Button, Input, Typography, Tag } from "antd";
+import { Alert, Button, Empty, Input, Spin, Typography, Tag } from "antd";
 import {
   AppstoreOutlined,
   FilterOutlined,
   UnorderedListOutlined,
 } from "@ant-design/icons";
 import { ServicesCards } from "./card/ServicesCards";
-import { services } from "@/utils/sampledat";
+import { useListProviderServicesQuery } from "@/features/provider-services/providerServicesApi";
 const { Title, Text } = Typography;
 
 export const AllServices = () => {
   const [search, setSearch] = useState("");
   const [view, setView] = useState<"grid" | "list">("grid");
   const [selected, setSelected] = useState<string | null>(null);
+  const { data, isLoading, error } = useListProviderServicesQuery();
 
-  const filtered = services.filter((s) =>
-    s.label.toLowerCase().includes(search.toLowerCase()),
-  );
+  const allProviderServices = data?.data ?? [];
+  const serviceNames = Array.from(
+    new Set(allProviderServices.map((offering) => offering.service.name)),
+  ).filter((name) => name.toLowerCase().includes(search.toLowerCase()));
+  const providerServices = allProviderServices.filter((offering) => {
+    const query = search.toLowerCase();
+    const matchesSearch =
+      offering.service.name.toLowerCase().includes(query) ||
+      `${offering.provider.firstName} ${offering.provider.lastName}`
+        .toLowerCase()
+        .includes(query) ||
+      offering.location.toLowerCase().includes(query);
+    const matchesCategory =
+      !selected || offering.service.name.toLowerCase() === selected.toLowerCase();
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div>
@@ -36,18 +50,15 @@ export const AllServices = () => {
             icon={<AppstoreOutlined />}
             type={view === "grid" ? "primary" : "default"}
             onClick={() => setView("grid")}
-            size=""
           />
           <Button
             icon={<UnorderedListOutlined />}
             type={view === "list" ? "primary" : "default"}
             onClick={() => setView("list")}
-            size=""
           />
           <Button
             className="flex items-center gap-2"
             icon={<FilterOutlined />}
-            size=""
           >
             Filter
           </Button>
@@ -57,7 +68,6 @@ export const AllServices = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             style={{ width: 200 }}
-            size=""
           />
         </div>
       </div>
@@ -67,12 +77,12 @@ export const AllServices = () => {
         className="flex gap-2 overflow-x-auto pb-2"
         style={{ scrollbarWidth: "none" }}
       >
-        {filtered.map((s) => {
-          const isActive = selected === s.label;
+        {serviceNames.map((serviceName) => {
+          const isActive = selected === serviceName;
           return (
             <Tag
-              key={s.label}
-              onClick={() => setSelected(isActive ? null : s.label)}
+              key={serviceName}
+              onClick={() => setSelected(isActive ? null : serviceName)}
               color={isActive ? "blue" : "default"}
               style={{
                 cursor: "pointer",
@@ -87,19 +97,35 @@ export const AllServices = () => {
                 userSelect: "none",
               }}
             >
-              {s.emoji} {s.label}
+              {serviceName}
             </Tag>
           );
         })}
       </div>
-      {/* Services grid */}
-      <div
-        className={"grid mt-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"}
-      >
-        {[...Array(10)].map((_, idx) => (
-          <ServicesCards key={idx} index={idx} />
-        ))}
-      </div>
+      {error && (
+        <Alert
+          className="mt-6"
+          type="error"
+          showIcon
+          message="Failed to load provider services"
+        />
+      )}
+      {isLoading ? (
+        <div className="flex justify-center py-20">
+          <Spin size="large" />
+        </div>
+      ) : providerServices.length ? (
+        <div className="grid mt-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {providerServices.map((providerService) => (
+            <ServicesCards
+              key={providerService.id}
+              providerService={providerService}
+            />
+          ))}
+        </div>
+      ) : (
+        <Empty className="mt-16" description="No provider services found" />
+      )}
     </div>
   );
 };

@@ -123,7 +123,7 @@ export default function ActionModal({
       onOk={handleOk}
       okText={cfg?.okText}
       okButtonProps={{ loading: isLoading, danger: cfg?.danger }}
-      destroyOnHide
+      destroyOnHidden
     >
       {errorMsg && (
         <Alert

@@ -5,7 +5,6 @@ export interface ServiceAttributes {
   id: string;
   name: string;
   description?: string | null;
-  durationMinutes: number;
   isActive: boolean;
   createdAt?: Date;
   updatedAt?: Date;
@@ -24,7 +23,6 @@ export class Service
   declare id: string;
   declare name: string;
   declare description: string | null | undefined;
-  declare durationMinutes: number;
   declare isActive: boolean;
   declare readonly createdAt: Date;
   declare readonly updatedAt: Date;
@@ -45,10 +43,6 @@ Service.init(
     description: {
       type: DataTypes.TEXT,
       allowNull: true,
-    },
-    durationMinutes: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
     },
     isActive: {
       type: DataTypes.BOOLEAN,

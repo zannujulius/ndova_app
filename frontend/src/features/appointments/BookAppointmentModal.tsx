@@ -46,11 +46,11 @@ export default function BookAppointmentModal({ open, onClose }: Props) {
 
   const serviceOptions = (servicesData?.data ?? []).map((s) => ({
     value: s.id,
-    label: `${s.name} (${s.durationMinutes} min)`,
+    label: s.name,
   }));
 
   return (
-    <Modal title="Book Appointment" open={open} onCancel={onClose} footer={null} destroyOnHide>
+    <Modal title="Book Appointment" open={open} onCancel={onClose} footer={null} destroyOnHidden>
       {apiError && (
         <Alert message={apiError} type="error" showIcon style={{ marginBottom: 16 }} />
       )}
