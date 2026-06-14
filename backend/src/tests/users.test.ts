@@ -4,10 +4,8 @@ import {
   Appointment,
   AppointmentStatusHistory,
   ProviderService,
-  Role,
   Service,
   User,
-  UserRole,
 } from '../models';
 import { AppointmentStatus } from '../types/enums';
 
@@ -41,6 +39,7 @@ beforeAll(async () => {
     lastName: 'DeleteMe',
     email: TEMP_EMAIL,
     password: 'TempPass@123',
+    role: 'CLIENT',
   });
   tempUserId = reg.body.data.user.id;
 
@@ -49,18 +48,14 @@ beforeAll(async () => {
     lastName: 'Provider',
     email: TEMP_PROVIDER_EMAIL,
     password: 'TempPass@123',
+    role: 'PROVIDER',
   });
   tempProviderId = providerRegistration.body.data.user.id;
 
-  const [providerRole, service] = await Promise.all([
-    Role.findOne({ where: { name: 'PROVIDER' } }),
-    Service.findOne(),
-  ]);
-  if (!providerRole || !service) {
-    throw new Error('Provider role and at least one service are required for user tests');
+  const service = await Service.findOne();
+  if (!service) {
+    throw new Error('At least one service is required for user tests');
   }
-
-  await UserRole.create({ userId: tempProviderId, roleId: providerRole.id });
 
   const providerService = await ProviderService.create({
     providerId: tempProviderId,

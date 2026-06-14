@@ -23,6 +23,7 @@ describe("POST /api/auth/register", () => {
       lastName: "User",
       email: TEST_EMAIL,
       password: TEST_PASSWORD,
+      role: "CLIENT",
     });
 
     expect(res.status).toBe(201);
@@ -42,6 +43,7 @@ describe("POST /api/auth/register", () => {
       lastName: "User",
       email: TEST_EMAIL,
       password: TEST_PASSWORD,
+      role: "CLIENT",
     });
 
     expect(res.status).toBe(409);
@@ -64,6 +66,7 @@ describe("POST /api/auth/register", () => {
       lastName: "Email",
       email: "not-an-email",
       password: "Pass@1234",
+      role: "CLIENT",
     });
 
     expect(res.status).toBe(400);
@@ -76,10 +79,38 @@ describe("POST /api/auth/register", () => {
       lastName: "Pass",
       email: "short@example.com",
       password: "123",
+      role: "CLIENT",
     });
 
     expect(res.status).toBe(400);
     expect(res.body.success).toBe(false);
+  });
+
+  it("201 — registers a provider with the PROVIDER role", async () => {
+    const providerEmail = `testprovider_${Date.now()}@example.com`;
+    const res = await request(app).post("/api/auth/register").send({
+      firstName: "Test",
+      lastName: "Provider",
+      email: providerEmail,
+      password: TEST_PASSWORD,
+      role: "PROVIDER",
+    });
+
+    expect(res.status).toBe(201);
+    expect(res.body.data.user.roles).toEqual(["PROVIDER"]);
+    await User.destroy({ where: { email: providerEmail } });
+  });
+
+  it("400 — does not allow public ADMIN registration", async () => {
+    const res = await request(app).post("/api/auth/register").send({
+      firstName: "Bad",
+      lastName: "Admin",
+      email: `testadmin_${Date.now()}@example.com`,
+      password: TEST_PASSWORD,
+      role: "ADMIN",
+    });
+
+    expect(res.status).toBe(400);
   });
 });
 

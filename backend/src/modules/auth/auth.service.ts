@@ -31,16 +31,16 @@ export async function register(input: RegisterInput) {
     phone: input.phone,
   });
 
-  const clientRole = await Role.findOne({ where: { name: "CLIENT" } });
-  if (!clientRole)
-    throw ApiError.internal("CLIENT role not found — run db:seed");
+  const selectedRole = await Role.findOne({ where: { name: input.role } });
+  if (!selectedRole)
+    throw ApiError.internal(`${input.role} role not found — run db:seed`);
 
-  await UserRole.create({ userId: user.id, roleId: clientRole.id });
+  await UserRole.create({ userId: user.id, roleId: selectedRole.id });
 
   const token = signToken({
     userId: user.id,
     email: user.email,
-    roles: ["CLIENT"],
+    roles: [input.role],
   });
 
   // Re-fetch with roles so sanitizeUser can build the roles array

@@ -111,6 +111,7 @@ export interface RegisterRequest {
   email: string;
   password: string;
   phone?: string;
+  role: Extract<UserRole, "CLIENT" | "PROVIDER">;
 }
 
 export interface AuthData {
