@@ -31,7 +31,8 @@ const roleNavMap: Record<
       icon: <CalendarOutlined />,
     },
     { path: "/services", label: "Services", icon: <AppstoreOutlined /> },
-    { path: "/users", label: "Users", icon: <TeamOutlined /> },
+    { path: "/clients", label: "Clients", icon: <TeamOutlined /> },
+    { path: "/providers", label: "Providers", icon: <UserOutlined /> },
   ],
   PROVIDER: [
     { path: "/dashboard", label: "Dashboard", icon: <DashboardOutlined /> },

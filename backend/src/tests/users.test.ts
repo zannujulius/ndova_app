@@ -1,14 +1,28 @@
 import request from 'supertest';
 import app from '../app';
-import { User } from '../models';
+import {
+  Appointment,
+  AppointmentStatusHistory,
+  ProviderService,
+  Role,
+  Service,
+  User,
+  UserRole,
+} from '../models';
+import { AppointmentStatus } from '../types/enums';
 
 const TEMP_EMAIL = `temp_delete_${Date.now()}@example.com`;
+const TEMP_PROVIDER_EMAIL = `temp_provider_delete_${Date.now()}@example.com`;
 
 let adminToken = '';
 let clientToken = '';
 let adminUserId = '';
 let clientUserId = '';
 let tempUserId = '';
+let tempProviderId = '';
+let tempAppointmentId = '';
+let tempProviderAppointmentId = '';
+let tempProviderServiceId = '';
 
 beforeAll(async () => {
   const [adminRes, clientRes] = await Promise.all([
@@ -29,11 +43,65 @@ beforeAll(async () => {
     password: 'TempPass@123',
   });
   tempUserId = reg.body.data.user.id;
+
+  const providerRegistration = await request(app).post('/api/auth/register').send({
+    firstName: 'Temp',
+    lastName: 'Provider',
+    email: TEMP_PROVIDER_EMAIL,
+    password: 'TempPass@123',
+  });
+  tempProviderId = providerRegistration.body.data.user.id;
+
+  const [providerRole, service] = await Promise.all([
+    Role.findOne({ where: { name: 'PROVIDER' } }),
+    Service.findOne(),
+  ]);
+  if (!providerRole || !service) {
+    throw new Error('Provider role and at least one service are required for user tests');
+  }
+
+  await UserRole.create({ userId: tempProviderId, roleId: providerRole.id });
+
+  const providerService = await ProviderService.create({
+    providerId: tempProviderId,
+    serviceId: service.id,
+    location: 'Test location',
+    description: 'Temporary provider service',
+    durationMinutes: 30,
+    stars: 0,
+  });
+  tempProviderServiceId = providerService.id;
+
+  const clientAppointment = await Appointment.create({
+    clientId: tempUserId,
+    serviceId: service.id,
+    requestedDate: new Date('2032-03-01'),
+    requestedTime: '09:00',
+    status: AppointmentStatus.PENDING,
+  });
+  tempAppointmentId = clientAppointment.id;
+  await AppointmentStatusHistory.create({
+    appointmentId: clientAppointment.id,
+    newStatus: AppointmentStatus.PENDING,
+    changedById: tempUserId,
+  });
+
+  const providerAppointment = await Appointment.create({
+    clientId: clientUserId,
+    providerId: tempProviderId,
+    providerServiceId: providerService.id,
+    serviceId: service.id,
+    requestedDate: new Date('2032-03-02'),
+    requestedTime: '10:00',
+    durationMinutes: 30,
+    status: AppointmentStatus.PENDING,
+  });
+  tempProviderAppointmentId = providerAppointment.id;
 });
 
 afterAll(async () => {
   // Guard: clean up if the delete test failed
-  await User.destroy({ where: { email: TEMP_EMAIL } }).catch(() => {});
+  await User.destroy({ where: { email: [TEMP_EMAIL, TEMP_PROVIDER_EMAIL] } }).catch(() => {});
 });
 
 // ---------------------------------------------------------------------------
@@ -154,13 +222,30 @@ describe('DELETE /api/users/:id', () => {
     expect(res.body.success).toBe(false);
   });
 
-  it('200 — ADMIN deletes a user with no appointments', async () => {
+  it('200 — ADMIN deletes a client and cascades their appointments', async () => {
     const res = await request(app)
       .delete(`/api/users/${tempUserId}`)
       .set('Authorization', `Bearer ${adminToken}`);
 
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
+    expect(await Appointment.findByPk(tempAppointmentId)).toBeNull();
+    expect(
+      await AppointmentStatusHistory.findOne({
+        where: { appointmentId: tempAppointmentId },
+      })
+    ).toBeNull();
+  });
+
+  it('200 — ADMIN deletes a provider and cascades services and appointments', async () => {
+    const res = await request(app)
+      .delete(`/api/users/${tempProviderId}`)
+      .set('Authorization', `Bearer ${adminToken}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(await ProviderService.findByPk(tempProviderServiceId)).toBeNull();
+    expect(await Appointment.findByPk(tempProviderAppointmentId)).toBeNull();
   });
 
   it('404 — returns not found after deletion', async () => {

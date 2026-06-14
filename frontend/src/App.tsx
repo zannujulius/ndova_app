@@ -9,8 +9,8 @@ import ServicesPage from "@/features/services/ServicesPage";
 import AppointmentsPage from "@/features/appointments/AppointmentsPage";
 import AppointmentDetailPage from "@/features/appointments/AppointmentDetailPage";
 import ServiceDetails from "@/pages/ServiceDetails";
-import ComingSoonPage from "@/pages/ComingSoonPage";
 import ProviderSettingsPage from "@/features/provider-services/ProviderSettingsPage";
+import AdminUsersPage from "@/features/users/AdminUsersPage";
 
 export default function App() {
   return (
@@ -52,7 +52,12 @@ export default function App() {
             <Route path="services" element={<ServicesPage />} />
             <Route path="settings" element={<ProviderSettingsPage />} />
             <Route path="service-details/:index" element={<ServiceDetails />} />
-            <Route path="users" element={<ComingSoonPage title="Users" />} />
+            <Route path="clients" element={<AdminUsersPage role="CLIENT" />} />
+            <Route
+              path="providers"
+              element={<AdminUsersPage role="PROVIDER" />}
+            />
+            <Route path="users" element={<Navigate to="/clients" replace />} />
           </Route>
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>

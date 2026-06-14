@@ -1,5 +1,13 @@
-import { ForeignKeyConstraintError } from 'sequelize';
-import { User, UserRole, Role } from '../../models';
+import { Op } from 'sequelize';
+import {
+  Appointment,
+  AppointmentStatusHistory,
+  ProviderService,
+  Role,
+  User,
+  UserRole,
+} from '../../models';
+import { sequelize } from '../../config/database';
 import { sanitizeUser } from '../../utils/sanitizeUser';
 import { ApiError } from '../../utils/ApiError';
 import { UpdateUserInput } from './users.validation';
@@ -46,14 +54,25 @@ export async function deleteUser(id: string, requestingUserId: string) {
   const user = await User.findByPk(id);
   if (!user) throw ApiError.notFound('User not found');
 
-  try {
-    await user.destroy();
-  } catch (err) {
-    if (err instanceof ForeignKeyConstraintError) {
-      throw ApiError.conflict(
-        'Cannot delete this user — they have existing appointments. Remove or reassign those first.'
-      );
-    }
-    throw err;
-  }
+  await sequelize.transaction(async (transaction) => {
+    await AppointmentStatusHistory.destroy({
+      where: { changedById: id },
+      transaction,
+    });
+    await Appointment.destroy({
+      where: {
+        [Op.or]: [{ clientId: id }, { providerId: id }],
+      },
+      transaction,
+    });
+    await ProviderService.destroy({
+      where: { providerId: id },
+      transaction,
+    });
+    await UserRole.destroy({
+      where: { userId: id },
+      transaction,
+    });
+    await user.destroy({ transaction });
+  });
 }

@@ -22,7 +22,8 @@ const roleNavMap: Record<
     { key: "/dashboard", label: "Dashboard", icon: <DashboardOutlined /> },
     { key: "/appointments", label: "Appointments", icon: <CalendarOutlined /> },
     { key: "/services", label: "Services", icon: <AppstoreOutlined /> },
-    { key: "/users", label: "Users", icon: <TeamOutlined /> },
+    { key: "/clients", label: "Clients", icon: <TeamOutlined /> },
+    { key: "/providers", label: "Providers", icon: <TeamOutlined /> },
   ],
   PROVIDER: [
     { key: "/dashboard", label: "Dashboard", icon: <DashboardOutlined /> },

@@ -19,11 +19,19 @@ UserRole.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 UserRole.belongsTo(Role, { foreignKey: 'roleId', as: 'role' });
 
 // User (CLIENT) → Appointments
-User.hasMany(Appointment, { foreignKey: 'clientId', as: 'clientAppointments' });
+User.hasMany(Appointment, {
+  foreignKey: 'clientId',
+  as: 'clientAppointments',
+  onDelete: 'CASCADE',
+});
 Appointment.belongsTo(User, { foreignKey: 'clientId', as: 'client' });
 
 // User (PROVIDER) → Appointments
-User.hasMany(Appointment, { foreignKey: 'providerId', as: 'providerAppointments' });
+User.hasMany(Appointment, {
+  foreignKey: 'providerId',
+  as: 'providerAppointments',
+  onDelete: 'CASCADE',
+});
 Appointment.belongsTo(User, { foreignKey: 'providerId', as: 'provider' });
 
 // Service → Appointments
@@ -41,7 +49,11 @@ Appointment.belongsTo(ProviderService, {
 // Provider-specific service offerings
 Service.hasMany(ProviderService, { foreignKey: 'serviceId', as: 'providerServices' });
 ProviderService.belongsTo(Service, { foreignKey: 'serviceId', as: 'service' });
-User.hasMany(ProviderService, { foreignKey: 'providerId', as: 'providedServices' });
+User.hasMany(ProviderService, {
+  foreignKey: 'providerId',
+  as: 'providedServices',
+  onDelete: 'CASCADE',
+});
 ProviderService.belongsTo(User, { foreignKey: 'providerId', as: 'provider' });
 
 // Appointment → Status History
@@ -56,7 +68,11 @@ AppointmentStatusHistory.belongsTo(Appointment, {
 });
 
 // User → Status History (who made the change)
-User.hasMany(AppointmentStatusHistory, { foreignKey: 'changedById', as: 'statusChanges' });
+User.hasMany(AppointmentStatusHistory, {
+  foreignKey: 'changedById',
+  as: 'statusChanges',
+  onDelete: 'CASCADE',
+});
 AppointmentStatusHistory.belongsTo(User, { foreignKey: 'changedById', as: 'changedBy' });
 
 export {
