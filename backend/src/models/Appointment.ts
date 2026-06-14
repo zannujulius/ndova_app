@@ -7,8 +7,13 @@ export interface AppointmentAttributes {
   clientId: string;
   providerId?: string | null;
   serviceId: string;
+  providerServiceId?: string | null;
   requestedDate: Date;
   requestedTime: string;
+  durationMinutes?: number | null;
+  sessionType?: string | null;
+  location?: string | null;
+  meetingLink?: string | null;
   reason?: string | null;
   status: AppointmentStatus;
   adminNote?: string | null;
@@ -20,6 +25,11 @@ export interface AppointmentCreationAttributes extends Optional<
   AppointmentAttributes,
   | "id"
   | "providerId"
+  | "providerServiceId"
+  | "durationMinutes"
+  | "sessionType"
+  | "location"
+  | "meetingLink"
   | "reason"
   | "status"
   | "adminNote"
@@ -35,8 +45,13 @@ export class Appointment
   declare clientId: string;
   declare providerId: string | null | undefined;
   declare serviceId: string;
+  declare providerServiceId: string | null | undefined;
   declare requestedDate: Date;
   declare requestedTime: string;
+  declare durationMinutes: number | null | undefined;
+  declare sessionType: string | null | undefined;
+  declare location: string | null | undefined;
+  declare meetingLink: string | null | undefined;
   declare reason: string | null | undefined;
   declare status: AppointmentStatus;
   declare adminNote: string | null | undefined;
@@ -64,6 +79,10 @@ Appointment.init(
       type: DataTypes.UUID,
       allowNull: false,
     },
+    providerServiceId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+    },
     requestedDate: {
       type: DataTypes.DATEONLY,
       allowNull: false,
@@ -71,6 +90,22 @@ Appointment.init(
     requestedTime: {
       type: DataTypes.STRING(10),
       allowNull: false,
+    },
+    durationMinutes: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    sessionType: {
+      type: DataTypes.STRING(20),
+      allowNull: true,
+    },
+    location: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    meetingLink: {
+      type: DataTypes.TEXT,
+      allowNull: true,
     },
     reason: {
       type: DataTypes.TEXT,

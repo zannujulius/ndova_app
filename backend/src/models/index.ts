@@ -29,6 +29,14 @@ Appointment.belongsTo(User, { foreignKey: 'providerId', as: 'provider' });
 // Service → Appointments
 Service.hasMany(Appointment, { foreignKey: 'serviceId', as: 'appointments' });
 Appointment.belongsTo(Service, { foreignKey: 'serviceId', as: 'service' });
+ProviderService.hasMany(Appointment, {
+  foreignKey: 'providerServiceId',
+  as: 'appointments',
+});
+Appointment.belongsTo(ProviderService, {
+  foreignKey: 'providerServiceId',
+  as: 'providerService',
+});
 
 // Provider-specific service offerings
 Service.hasMany(ProviderService, { foreignKey: 'serviceId', as: 'providerServices' });

@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
-import { ApiError } from '../utils/ApiError';
+import { Request, Response, NextFunction } from "express";
+import { ApiError } from "../utils/ApiError";
 
 export function authorize(...allowedRoles: string[]) {
   return (req: Request, _res: Response, next: NextFunction): void => {
@@ -10,7 +10,11 @@ export function authorize(...allowedRoles: string[]) {
 
     const hasRole = allowedRoles.some((role) => req.user!.roles.includes(role));
     if (!hasRole) {
-      next(ApiError.forbidden('You do not have permission to access this resource'));
+      next(
+        ApiError.forbidden(
+          "You do not have permission to access this resource",
+        ),
+      );
       return;
     }
 

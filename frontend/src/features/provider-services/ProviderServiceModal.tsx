@@ -5,10 +5,8 @@ import {
   Form,
   Image,
   Input,
-  InputNumber,
   Modal,
   Select,
-  Space,
 } from "antd";
 import { LinkOutlined, PictureOutlined } from "@ant-design/icons";
 import { useListServicesQuery } from "@/features/services/servicesApi";
@@ -191,10 +189,13 @@ export default function ProviderServiceModal({
           name="durationMinutes"
           rules={[{ required: true, message: "Duration is required" }]}
         >
-          <Space.Compact style={{ width: "100%" }}>
-            <InputNumber min={1} style={{ width: "100%" }} />
-            <Button disabled>minutes</Button>
-          </Space.Compact>
+          <Select
+            placeholder="Select duration"
+            options={[
+              { value: 30, label: "30 minutes" },
+              { value: 60, label: "60 minutes (1 hour)" },
+            ]}
+          />
         </Form.Item>
 
         <Form.Item

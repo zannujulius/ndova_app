@@ -1,4 +1,4 @@
-import { Modal, Form, Input, Radio, Typography, Divider } from "antd";
+import { Modal, Form, Input, Radio, Typography, Divider, Alert } from "antd";
 import { useEffect } from "react";
 import type { Dayjs } from "dayjs";
 import {
@@ -14,21 +14,21 @@ const { Text } = Typography;
 interface Props {
   open: boolean;
   onClose: () => void;
-  onConfirm: (discussion?: string) => Promise<void>;
+  onConfirm: (values: BookingFormValues) => Promise<void>;
   selectedDate: Dayjs | null;
   selectedTime: string | null;
   providerName: string;
   serviceType: string;
   durationMinutes: number;
+  providerLocation: string;
+  meetingLink?: string;
   isLoading?: boolean;
 }
 
-interface BookingFormValues {
+export interface BookingFormValues {
   fullName: string;
   email: string;
-  sessionType: "in-person" | "online";
-  location?: string;
-  meetingLink?: string;
+  sessionType: "IN_PERSON" | "ONLINE";
   discussion?: string;
 }
 
@@ -41,6 +41,8 @@ export default function BookingConfirmModal({
   providerName,
   serviceType,
   durationMinutes,
+  providerLocation,
+  meetingLink,
   isLoading = false,
 }: Props) {
   const [form] = Form.useForm<BookingFormValues>();
@@ -54,7 +56,7 @@ export default function BookingConfirmModal({
       form.setFieldsValue({
         fullName: `${user.firstName} ${user.lastName}`,
         email: user.email,
-        sessionType: "in-person",
+        sessionType: "IN_PERSON",
       });
     }
     if (!open) form.resetFields();
@@ -64,7 +66,7 @@ export default function BookingConfirmModal({
     form
       .validateFields()
       .then(async (values) => {
-        await onConfirm(values.discussion);
+        await onConfirm(values);
         form.resetFields();
       })
       .catch(() => {
@@ -91,8 +93,8 @@ export default function BookingConfirmModal({
           {serviceType} — {providerName}
         </Text>
         <Text className="text-gray-500 text-sm">
-          {selectedDate?.format("ddd, MMM D, YYYY")} &middot; {selectedTime} &middot;{" "}
-          {durationMinutes} min
+          {selectedDate?.format("ddd, MMM D, YYYY")} &middot; {selectedTime}{" "}
+          &middot; {durationMinutes} min
         </Text>
       </div>
 
@@ -103,7 +105,10 @@ export default function BookingConfirmModal({
           name="fullName"
           rules={[{ required: true, message: "Name is required" }]}
         >
-          <Input prefix={<UserOutlined className="text-gray-400" />} />
+          <Input
+            prefix={<UserOutlined className="text-gray-400" />}
+            disabled
+          />
         </Form.Item>
 
         {/* Email */}
@@ -115,45 +120,55 @@ export default function BookingConfirmModal({
             { type: "email", message: "Enter a valid email" },
           ]}
         >
-          <Input prefix={<MailOutlined className="text-gray-400" />} />
+          <Input
+            prefix={<MailOutlined className="text-gray-400" />}
+            disabled
+          />
         </Form.Item>
 
         <Divider className="my-4" />
 
         {/* Session type toggle */}
-        <Form.Item label="Session type" name="sessionType">
+        <Form.Item
+          label="Session type"
+          name="sessionType"
+          rules={[{ required: true, message: "Select a session type" }]}
+        >
           <Radio.Group buttonStyle="solid">
-            <Radio.Button value="in-person">In Person</Radio.Button>
-            <Radio.Button value="online">Online</Radio.Button>
+            <Radio.Button value="IN_PERSON">In Person</Radio.Button>
+            <Radio.Button value="ONLINE" disabled={!meetingLink}>
+              Online
+            </Radio.Button>
           </Radio.Group>
         </Form.Item>
 
-        {/* Conditional: In-person location */}
-        {sessionType === "in-person" && (
-          <Form.Item
-            label="Location"
-            name="location"
-            rules={[{ required: true, message: "Please enter a meeting location" }]}
-          >
+        {sessionType === "IN_PERSON" && (
+          <Form.Item label="Location">
             <Input
               prefix={<EnvironmentOutlined className="text-gray-400" />}
-              placeholder="e.g. Kacyiru Health Centre, Kigali"
+              value={providerLocation}
+              disabled
             />
           </Form.Item>
         )}
 
-        {/* Conditional: Online meeting link */}
-        {sessionType === "online" && (
-          <Form.Item
-            label="Meeting link"
-            name="meetingLink"
-            rules={[{ required: true, message: "Please provide a meeting link" }]}
-          >
+        {sessionType === "ONLINE" && meetingLink && (
+          <Form.Item label="Meeting link">
             <Input
               prefix={<LinkOutlined className="text-gray-400" />}
-              placeholder="https://zoom.us/j/... or meet.google.com/..."
+              value={meetingLink}
+              disabled
             />
           </Form.Item>
+        )}
+
+        {!meetingLink && (
+          <Alert
+            type="info"
+            showIcon
+            message="This provider currently accepts in-person bookings only."
+            style={{ marginBottom: 16 }}
+          />
         )}
 
         {/* Discussion brief */}

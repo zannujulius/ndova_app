@@ -128,15 +128,28 @@ export default function AppointmentDetailPage() {
               <Descriptions.Item label="Service">
                 {appt.service?.name ?? '—'}
               </Descriptions.Item>
-              <Descriptions.Item label="Duration">
-                —
-              </Descriptions.Item>
               <Descriptions.Item label="Date">
                 {formatDate(String(appt.requestedDate))}
               </Descriptions.Item>
               <Descriptions.Item label="Time">
                 {appt.requestedTime}
               </Descriptions.Item>
+              <Descriptions.Item label="Session">
+                {appt.sessionType === "ONLINE" ? "Online" : "In person"}
+              </Descriptions.Item>
+              <Descriptions.Item label="Duration">
+                {appt.durationMinutes ? `${appt.durationMinutes} min` : "—"}
+              </Descriptions.Item>
+              <Descriptions.Item label="Location">
+                {appt.location ?? "—"}
+              </Descriptions.Item>
+              {appt.meetingLink && (
+                <Descriptions.Item label="Meeting link">
+                  <a href={appt.meetingLink} target="_blank" rel="noreferrer">
+                    Join online meeting
+                  </a>
+                </Descriptions.Item>
+              )}
               {appt.client && (
                 <Descriptions.Item label="Client">
                   {appt.client.firstName} {appt.client.lastName}

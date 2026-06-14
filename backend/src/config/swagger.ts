@@ -90,6 +90,20 @@ const options = {
             clientId: { type: "string", format: "uuid" },
             providerId: { type: "string", format: "uuid" },
             serviceId: { type: "string", format: "uuid" },
+            providerServiceId: { type: "string", format: "uuid" },
+            requestedDate: { type: "string", format: "date" },
+            requestedTime: { type: "string", example: "10:00" },
+            durationMinutes: { type: "integer" },
+            sessionType: {
+              type: "string",
+              enum: ["IN_PERSON", "ONLINE"],
+            },
+            location: { type: "string", nullable: true },
+            meetingLink: {
+              type: "string",
+              format: "uri",
+              nullable: true,
+            },
             scheduledAt: { type: "string", format: "date-time" },
             status: {
               type: "string",

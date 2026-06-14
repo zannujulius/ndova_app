@@ -8,6 +8,7 @@ let clientToken = "";
 let providerUserId = "";
 let clientUserId = "";
 let serviceId = "";
+let providerServiceId = "";
 
 // Track IDs of appointments created during tests for cleanup
 const createdIds: string[] = [];
@@ -34,6 +35,13 @@ beforeAll(async () => {
   // Pick the first active service for all appointment tests
   const svcRes = await request(app).get("/api/services");
   serviceId = svcRes.body.data[0].id;
+
+  const providerServicesRes = await request(app)
+    .get("/api/provider-services/mine")
+    .set("Authorization", `Bearer ${providerToken}`);
+  const providerService = providerServicesRes.body.data[0];
+  providerServiceId = providerService.id;
+  serviceId = providerService.serviceId;
 });
 
 afterAll(async () => {
@@ -120,6 +128,60 @@ describe("POST /api/appointments", () => {
 
     expect(res.status).toBe(404);
   });
+
+  it("201 — persists provider-service booking details and lists it for the provider", async () => {
+    const createRes = await request(app)
+      .post("/api/appointments")
+      .set("Authorization", `Bearer ${clientToken}`)
+      .send({
+        serviceId,
+        providerId: providerUserId,
+        providerServiceId,
+        requestedDate: "2030-01-07",
+        requestedTime: "14:00",
+        sessionType: "IN_PERSON",
+        reason: "Booking flow integration test",
+      });
+
+    expect(createRes.status).toBe(201);
+    expect(createRes.body.data).toMatchObject({
+      providerId: providerUserId,
+      providerServiceId,
+      sessionType: "IN_PERSON",
+      reason: "Booking flow integration test",
+    });
+    expect(createRes.body.data.durationMinutes).toBeGreaterThan(0);
+    expect(createRes.body.data.location).toBeTruthy();
+    createdIds.push(createRes.body.data.id);
+
+    const providerListRes = await request(app)
+      .get("/api/appointments")
+      .set("Authorization", `Bearer ${providerToken}`);
+
+    expect(providerListRes.status).toBe(200);
+    expect(
+      providerListRes.body.data.some(
+        (appointment: { id: string }) =>
+          appointment.id === createRes.body.data.id,
+      ),
+    ).toBe(true);
+  });
+
+  it("409 — rejects an overlapping provider time slot", async () => {
+    const res = await request(app)
+      .post("/api/appointments")
+      .set("Authorization", `Bearer ${clientToken}`)
+      .send({
+        serviceId,
+        providerId: providerUserId,
+        providerServiceId,
+        requestedDate: "2030-01-07",
+        requestedTime: "14:00",
+        sessionType: "IN_PERSON",
+      });
+
+    expect(res.status).toBe(409);
+  });
 });
 
 // ---- GET /api/appointments --------------------------------------------------
@@ -158,6 +220,70 @@ describe("GET /api/appointments", () => {
   it("401 — rejects unauthenticated request", async () => {
     const res = await request(app).get("/api/appointments");
     expect(res.status).toBe(401);
+  });
+});
+
+describe("GET /api/appointments/availability", () => {
+  let appointmentId = "";
+
+  beforeAll(async () => {
+    const res = await request(app)
+      .post("/api/appointments")
+      .set("Authorization", `Bearer ${clientToken}`)
+      .send({
+        serviceId,
+        providerId: providerUserId,
+        providerServiceId,
+        requestedDate: "2031-02-03",
+        requestedTime: "11:00",
+        sessionType: "IN_PERSON",
+      });
+    appointmentId = res.body.data.id;
+    createdIds.push(appointmentId);
+  });
+
+  it("200 — returns pending and approved appointments as occupied slots", async () => {
+    const res = await request(app)
+      .get("/api/appointments/availability")
+      .query({
+        providerServiceId,
+        date: "2031-02-03",
+      })
+      .set("Authorization", `Bearer ${clientToken}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.data).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: appointmentId,
+          startTime: "11:00",
+          status: "PENDING",
+        }),
+      ]),
+    );
+  });
+
+  it("200 — rejected appointments no longer occupy the slot", async () => {
+    const rejectRes = await request(app)
+      .patch(`/api/appointments/${appointmentId}/reject`)
+      .set("Authorization", `Bearer ${providerToken}`)
+      .send({ adminNote: "Please choose another time." });
+    expect(rejectRes.status).toBe(200);
+
+    const availabilityRes = await request(app)
+      .get("/api/appointments/availability")
+      .query({
+        providerServiceId,
+        date: "2031-02-03",
+      })
+      .set("Authorization", `Bearer ${clientToken}`);
+
+    expect(availabilityRes.status).toBe(200);
+    expect(
+      availabilityRes.body.data.some(
+        (slot: { id: string }) => slot.id === appointmentId,
+      ),
+    ).toBe(false);
   });
 });
 

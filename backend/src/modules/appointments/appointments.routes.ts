@@ -85,6 +85,29 @@ router.post(
  */
 router.get("/", appointmentsController.listAppointments);
 
+router.get(
+  "/availability",
+  (req, res, next) => {
+    const providerServiceId = req.query.providerServiceId;
+    const date = req.query.date;
+    if (
+      typeof providerServiceId !== "string" ||
+      !/^[0-9a-f-]{36}$/i.test(providerServiceId) ||
+      typeof date !== "string" ||
+      !/^\d{4}-\d{2}-\d{2}$/.test(date)
+    ) {
+      res.status(400).json({
+        success: false,
+        message: "Valid providerServiceId and date are required",
+        errors: [],
+      });
+      return;
+    }
+    next();
+  },
+  appointmentsController.getProviderServiceAvailability,
+);
+
 /**
  * @swagger
  * /appointments/{id}:

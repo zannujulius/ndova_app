@@ -8,13 +8,11 @@ export const createAppointment = asyncHandler(
       req.user!.id,
       req.body,
     );
-    res
-      .status(201)
-      .json({
-        success: true,
-        message: "Appointment created",
-        data: appointment,
-      });
+    res.status(201).json({
+      success: true,
+      message: "Appointment created",
+      data: appointment,
+    });
   },
 );
 
@@ -28,6 +26,21 @@ export const listAppointments = asyncHandler(
       success: true,
       message: "Appointments retrieved",
       data: appointments,
+    });
+  },
+);
+
+export const getProviderServiceAvailability = asyncHandler(
+  async (req: Request, res: Response) => {
+    const availability =
+      await appointmentsService.getProviderServiceAvailability(
+        String(req.query.providerServiceId),
+        String(req.query.date),
+      );
+    res.json({
+      success: true,
+      message: "Provider availability retrieved",
+      data: availability,
     });
   },
 );

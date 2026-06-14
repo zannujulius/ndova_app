@@ -56,14 +56,23 @@ export interface Appointment {
   clientId: string;
   providerId?: string;
   serviceId: string;
+  providerServiceId?: string;
   status: AppointmentStatus;
   requestedDate: string;
   requestedTime: string;
+  durationMinutes?: number;
+  sessionType?: "IN_PERSON" | "ONLINE";
+  location?: string;
+  meetingLink?: string;
   reason?: string;
   adminNote?: string;
   client?: Pick<User, "id" | "firstName" | "lastName" | "email">;
   provider?: Pick<User, "id" | "firstName" | "lastName" | "email">;
   service?: Pick<Service, "id" | "name">;
+  providerService?: Pick<
+    ProviderService,
+    "id" | "durationMinutes" | "location" | "meetingLink" | "imageUrl"
+  >;
   createdAt: string;
   updatedAt: string;
 }
