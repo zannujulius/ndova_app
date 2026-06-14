@@ -184,7 +184,8 @@ export async function createAppointment(
     const hasConflict = activeAppointments.some((appointment) => {
       const existingStart = timeToMinutes(appointment.requestedTime);
       const existingEnd =
-        existingStart + (appointment.durationMinutes ?? offering.durationMinutes);
+        existingStart +
+        (appointment.durationMinutes ?? offering.durationMinutes);
       return requestedStart < existingEnd && requestedEnd > existingStart;
     });
     if (hasConflict) {
@@ -203,9 +204,10 @@ export async function createAppointment(
         requestedTime: input.requestedTime,
         durationMinutes: offering?.durationMinutes ?? null,
         sessionType,
-        location: sessionType === "IN_PERSON" ? offering?.location ?? null : null,
+        location:
+          sessionType === "IN_PERSON" ? (offering?.location ?? null) : null,
         meetingLink:
-          sessionType === "ONLINE" ? offering?.meetingLink ?? null : null,
+          sessionType === "ONLINE" ? (offering?.meetingLink ?? null) : null,
         reason: input.reason ?? null,
         status: AppointmentStatus.PENDING,
       },
@@ -272,8 +274,7 @@ export async function getProviderServiceAvailability(
   return appointments.map((appointment) => ({
     id: appointment.id,
     startTime: appointment.requestedTime,
-    durationMinutes:
-      appointment.durationMinutes ?? offering.durationMinutes,
+    durationMinutes: appointment.durationMinutes ?? offering.durationMinutes,
     status: appointment.status,
   }));
 }

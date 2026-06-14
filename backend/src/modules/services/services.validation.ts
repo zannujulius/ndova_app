@@ -1,12 +1,12 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const createServiceSchema = z.object({
-  name: z.string().min(1, 'Name is required').trim(),
+  name: z.string().min(1, "Name is required").trim(),
   description: z.string().trim().optional(),
 });
 
 export const updateServiceSchema = z.object({
-  name: z.string().min(1, 'Name cannot be empty').trim().optional(),
+  name: z.string().min(1, "Name cannot be empty").trim().optional(),
   description: z.string().trim().optional(),
   isActive: z.boolean().optional(),
 });
