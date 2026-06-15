@@ -1,6 +1,6 @@
 // Extended Request type — populated in auth stages.
 // Placed here so all middleware and controllers can import it cleanly.
-import { Request } from 'express';
+import { Request } from "express";
 
 export interface AuthUser {
   id: string;
