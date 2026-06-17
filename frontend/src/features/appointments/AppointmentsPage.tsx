@@ -143,15 +143,13 @@ export default function AppointmentsPage() {
       title: "Session",
       key: "sessionType",
       width: 120,
-      render: (_, r) =>
-        r.sessionType === "ONLINE" ? "Online" : "In person",
+      render: (_, r) => (r.sessionType === "ONLINE" ? "Online" : "In person"),
     },
     {
       title: "Duration",
       key: "duration",
       width: 100,
-      render: (_, r) =>
-        r.durationMinutes ? `${r.durationMinutes} min` : "—",
+      render: (_, r) => (r.durationMinutes ? `${r.durationMinutes} min` : "—"),
     },
     {
       title: "Status",
@@ -192,7 +190,7 @@ export default function AppointmentsPage() {
               : "Review and action appointment requests"}
           </Text>
         </div>
-        {isClient && (
+        {/* {isClient && (
           <Button
             type="primary"
             icon={<PlusOutlined />}
@@ -200,7 +198,7 @@ export default function AppointmentsPage() {
           >
             Book appointment
           </Button>
-        )}
+        )} */}
       </div>
 
       {error && (
