@@ -15,13 +15,13 @@ Ndova is a full-stack service request and appointment booking platform. Clients 
 
 ## Tech Stack
 
-| Area | Stack |
-| --- | --- |
-| Frontend | React, TypeScript, Vite, Ant Design, Redux Toolkit, React Router |
-| Backend | Node.js, Express.js, TypeScript |
-| Database | PostgreSQL, Sequelize ORM, Sequelize migrations |
-| Auth & Security | JWT, bcrypt, role-based access control |
-| Tooling | Docker, Docker Compose, Jest, Supertest, Swagger |
+| Area            | Stack                                                            |
+| --------------- | ---------------------------------------------------------------- |
+| Frontend        | React, TypeScript, Vite, Ant Design, Redux Toolkit, React Router |
+| Backend         | Node.js, Express.js, TypeScript                                  |
+| Database        | PostgreSQL, Sequelize ORM, Sequelize migrations                  |
+| Auth & Security | JWT, bcrypt, role-based access control                           |
+| Tooling         | Docker, Docker Compose, Jest, Supertest, Swagger                 |
 
 ## Project Structure
 
@@ -59,8 +59,8 @@ docker compose -f backend/docker-compose.yml down
 
 ## Default Seeded Users
 
-| Role | Email | Password |
-| --- | --- | --- |
-| Admin | admin@ndova.com | Admin@123 |
+| Role     | Email              | Password     |
+| -------- | ------------------ | ------------ |
+| Admin    | admin@ndova.com    | Admin@123    |
 | Provider | provider@ndova.com | Provider@123 |
-| Client | client@ndova.com | Client@123 |
+| Client   | client@ndova.com   | Client@123   |

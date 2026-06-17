@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Table, Button, Typography, Space, Spin, Alert, message } from "antd";
 import type { TableColumnsType } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+// import { PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useListAppointmentsQuery } from "./appointmentsApi";
 import BookAppointmentModal from "./BookAppointmentModal";
