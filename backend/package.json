@@ -11,9 +11,11 @@
     "test:watch": "jest --watch --runInBand",
     "db:setup": "bash scripts/db-setup.sh",
     "db:migrate": "node -r ts-node/register ./node_modules/.bin/sequelize-cli db:migrate",
+    "db:migrate:docker": "sequelize-cli db:migrate --config src/db/config.js --migrations-path dist/db/migrations",
     "db:migrate:undo": "node -r ts-node/register ./node_modules/.bin/sequelize-cli db:migrate:undo",
     "db:migrate:undo:all": "node -r ts-node/register ./node_modules/.bin/sequelize-cli db:migrate:undo:all",
     "db:seed": "ts-node src/db/seed.ts",
+    "db:seed:docker": "node dist/db/seed.js",
     "db:studio": "echo 'Use a GUI like TablePlus, DBeaver, or pgAdmin to inspect the database.'"
   },
   "dependencies": {

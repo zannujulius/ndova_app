@@ -81,47 +81,58 @@ async function seed() {
   const services = [
     {
       name: "Medical Consultation",
-      description: "Professional medical consultations and healthcare guidance.",
+      description:
+        "Professional medical consultations and healthcare guidance.",
     },
     {
       name: "Legal Advisory",
-      description: "Legal guidance, document review, and professional advisory services.",
+      description:
+        "Legal guidance, document review, and professional advisory services.",
     },
     {
       name: "Accounting & Tax",
-      description: "Accounting, bookkeeping, tax preparation, and compliance services.",
+      description:
+        "Accounting, bookkeeping, tax preparation, and compliance services.",
     },
     {
       name: "Architecture & Design",
-      description: "Architectural planning, design, and project consultation services.",
+      description:
+        "Architectural planning, design, and project consultation services.",
     },
     {
       name: "Civil Engineering",
-      description: "Civil engineering consultation, planning, and project support.",
+      description:
+        "Civil engineering consultation, planning, and project support.",
     },
     {
       name: "Software Development",
-      description: "Custom software, web, mobile, and technical development services.",
+      description:
+        "Custom software, web, mobile, and technical development services.",
     },
     {
       name: "Education & Tutoring",
-      description: "Academic tutoring, training, and educational support services.",
+      description:
+        "Academic tutoring, training, and educational support services.",
     },
     {
       name: "Dental Care",
-      description: "Professional dental consultation, treatment, and preventive care.",
+      description:
+        "Professional dental consultation, treatment, and preventive care.",
     },
     {
       name: "Physiotherapy",
-      description: "Physical rehabilitation, mobility, and pain-management services.",
+      description:
+        "Physical rehabilitation, mobility, and pain-management services.",
     },
     {
       name: "Real Estate",
-      description: "Property sales, rentals, valuation, and real-estate advisory services.",
+      description:
+        "Property sales, rentals, valuation, and real-estate advisory services.",
     },
     {
       name: "Financial Planning",
-      description: "Personal and business financial planning and advisory services.",
+      description:
+        "Personal and business financial planning and advisory services.",
     },
     {
       name: "Electrical Works",
@@ -141,7 +152,8 @@ async function seed() {
     },
     {
       name: "Cleaning Services",
-      description: "Residential, commercial, and specialized cleaning services.",
+      description:
+        "Residential, commercial, and specialized cleaning services.",
     },
   ];
 
